@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTrack - Efficient Study Planning for Students</title>
+    <style>
+        :root {
+            --primary: #4285f4;
+            --primary-dark: #3367d6;
+            --secondary: #34a853;
+            --accent: #ea4335;
+            --light: #f8f9fa;
+            --dark: #202124;
+            --gray: #dadce0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            padding: 3rem 2rem;
+            gap: 2rem;
+        }
+        
+        .hero-content {
+            flex: 1;
+        }
+        
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .hero-content p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #5f6368;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features {
+            padding: 3rem 2rem;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        .section-title p {
+            color: #5f6368;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dashboard-preview {
+            padding: 3rem 2rem;
+            background-color: var(--light);
+            text-align: center;
+        }
+        
+        .dashboard-demo {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .dashboard-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .dashboard-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .dashboard-content {
+            display: none;
+        }
+        
+        .dashboard-content.active {
+            display: block;
+        }
+        
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .day-header {
+            font-weight: 500;
+            text-align: center;
+            padding: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 4px;
+        }
+        
+        .schedule-slot {
+            padding: 0.5rem;
+            border-radius: 4px;
+            min-height: 80px;
+            border: 1px solid var(--gray);
+            position: relative;
+        }
+        
+        .schedule-item {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .priority-high {
+            background-color: rgba(234, 67, 53, 0.2);
+            border-left: 3px solid var(--accent);
+        }
+        
+        .priority-medium {
+            background-color: rgba(251, 188, 4, 0.2);
+            border-left: 3px solid #fbbc04;
+        }
+        
+        .priority-low {
+            background-color: rgba(52, 168, 83, 0.2);
+            border-left: 3px solid var(--secondary);
+        }
+        
+        .add-task-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        
+        .subjects-list {
+            margin-bottom: 1rem;
+        }
+        
+        .subject-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .subject-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .subject-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--gray);
+            border-radius: 4px;
+            width: 100px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .task-checkbox {
+            margin-right: 0.75rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 2px solid var(--primary);
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .task-checkbox.checked {
+            background-color: var(--primary);
+            position: relative;
+        }
+        
+        .task-checkbox.checked::after {
+            content: "✓";
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+        }
+        
+        .task-label {
+            flex: 1;
+        }
+        
+        .task-label.completed {
+            text-decoration: line-through;
+            color: #5f6368;
+        }
+        
+        .task-due {
+            font-size: 0.8rem;
+            color: #5f6368;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .streak-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        
+        .streak-day {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .streak-day.completed {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #5f6368;
+        }
+        
+        .ai-suggestion {
+            background-color: rgba(66, 133, 244, 0.1);
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .ai-suggestion h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ai-suggestion h4::before {
+            content: "🤖";
+            margin-right: 0.5rem;
+        }
+        
+        .testimonials {
+            padding: 3rem 2rem;
+            background-color: white;
+        }
+        
+        .testimonial-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .testimonial-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: var(--light);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-author {
+            font-weight: 500;
+        }
+        
+        .cta {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .cta .btn-primary {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .cta .btn-primary:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta .btn-outline {
+            border-color: white;
+            color: white;
+        }
+        
+        .cta .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">StudyTrack</div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#testimonials">Testimonials</a>
+        </div>
+        <div class="auth-buttons">
+            <button class="btn-outline" id="loginBtn">Log In</button>
+            <button class="btn-primary" id="signupBtn">Sign Up Free</button>
+        </div>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Plan Your Study Schedule Efficiently</h1>
+            <p>StudyTrack helps students organize subjects, track study sessions, and meet deadlines with our intuitive planning tools.</p>
+            <button class="btn-primary" id="getStartedBtn">Get Started Now</button>
+        </div>
+        <div class="hero-image">
+            <img src="/api/placeholder/500/350" alt="Student using StudyTrack app to plan study schedule">
+        </div>
+    </section>
+    
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Key Features</h2>
+            <p>Everything you need to stay organized and on track with your studies</p>
+        </div>
+        
+        <div class="feature-cards">
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Subject Organization</h3>
+                <p>Easily organize your subjects, tasks, and deadlines in one centralized dashboard.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <h3>Study Session Tracking</h3>
+                <p>Track your study progress with interactive checklists, graphs, and timers.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3>Smart Reminders</h3>
+                <p>Get timely notifications about upcoming deadlines and scheduled study sessions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Gamified Motivation</h3>
+                <p>Stay motivated with study streaks, badges, and achievements as you maintain consistency.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Priority System</h3>
+                <p>Organize tasks with our urgent vs. non-urgent prioritization system.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Schedule Suggestions</h3>
+                <p>Receive personalized study schedule recommendations based on deadlines and difficulty levels.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="dashboard-preview" id="how-it-works">
+        <div class="section-title">
+            <h2>Your Study Command Center</h2>
+            <p>Try our interactive demo to see how StudyTrack helps you manage everything in one place</p>
+        </div>
+        
+        <div class="dashboard-demo">
+            <div class="dashboard-tabs">
+                <div class="dashboard-tab active" data-tab="schedule">Schedule</div>
+                <div class="dashboard-tab" data-tab="subjects">My Subjects</div>
+                <div class="dashboard-tab" data-tab="tasks">Tasks</div>
+                <div class="dashboard-tab" data-tab="progress">Progress</div>
+            </div>
+            
+            <div class="dashboard-content active" id="schedule-tab">
+                <div class="schedule-grid">
+                    <div class="day-header">Monday</div>
+                    <div class="day-header">Tuesday</div>
+                    <div class="day-header">Wednesday</div>
+                    <div class="day-header">Thursday</div>
+                    <div class="day-header">Friday</div>
+                    <div class="day-header">Saturday</div>
+                    <div class="day-header">Sunday</div>
+                    
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-high">Math - 9:00 AM</div>
+                        <div class="schedule-item priority-medium">Physics - 1:00 PM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-medium">Chemistry - 10:00 AM</div>
+                        <div class="schedule-item priority-low">English - 2:00 PM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-high">Physics Lab - 9:00 AM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-medium">History - 11:00 AM</div>
+                        <div class="schedule-item priority-high">Math - 3:00 PM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-low">Computer Science - 9:00 AM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-medium">Study Group - 2:00 PM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                    <div class="schedule-slot">
+                        <div class="schedule-item priority-low">Review Week - 10:00 AM</div>
+                        <div class="add-task-btn">+</div>
+                    </div>
+                </div>
+                <div class="ai-suggestion">
+                    <h4>AI Suggested Schedule Adjustment</h4>
+                    <p>Based on your upcoming Math exam, consider moving Thursday's Math session to Wednesday for better preparation.</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-content" id="subjects-tab">
+                <div class="subjects-list">
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <div class="subject-color" style="background-color: #ea4335;"></div>
+                            <div>Mathematics</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                            <div>75%</div>
+                        </div>
+                    </div>
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <div class="subject-color" style="background-color: #4285f4;"></div>
+                            <div>Physics</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                            <div>60%</div>
+                        </div>
+                    </div>
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <div class="subject-color" style="background-color: #34a853;"></div>
+                            <div>Chemistry</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%;"></div>
+                            </div>
+                            <div>45%</div>
+                        </div>
+                    </div>
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <div class="subject-color" style="background-color: #fbbc04;"></div>
+                            <div>English Literature</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%;"></div>
+                            </div>
+                            <div>80%</div>
+                        </div>
+                    </div>
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <div class="subject-color" style="background-color: #9334e6;"></div>
+                            <div>Computer Science</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                            <div>65%</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" id="addSubjectBtn">Add New Subject</button>
+            </div>
+            
+            <div class="dashboard-content" id="tasks-tab">
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-checkbox checked"></div>
+                        <div class="task-label completed">Complete Physics Lab Report</div>
+                        <div class="task-due">Due: Yesterday</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-label">Math Problem Set #4</div>
+                        <div class="task-due">Due: Tomorrow</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-label">Chemistry Quiz Preparation</div>
+                        <div class="task-due">Due: In 2 days</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-label">English Essay First Draft</div>
+                        <div class="task-due">Due: In 5 days</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-label">Computer Science Project</div>
+                        <div class="task-due">Due: In 1 week</div>
+                    </li>
+                </ul>
+                <button class="btn-primary" id="addTaskBtn">Add New Task</button>
+            </div>
+            
+            <div class="dashboard-content" id="progress-tab">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">14</div>
+                        <div class="stat-label">Study Hours This Week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Tasks Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Upcoming Deadlines</div>
+                    </div>
+                </div>
+                
+                <h3>Weekly Study Streak</h3>
+                <div class="streak-container">
+                    <div class="streak-day completed">M</div>
+                    <div class="streak-day completed">T</div>
+                    <div class="streak-day completed">W</div>
+                    <div class="streak-day completed">T</div>
+                    <div class="streak-day completed">F</div>
+                    <div class="streak-day">S</div>
+                    <div class="streak-day">S</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="testimonials" id="testimonials">
+        <div class="section-title">
+            <h2>What Students Say</h2>
+            <p>Hear from students who have improved their study habits with StudyTrack</p>
+        </div>
+        
+        <div class="testimonial-cards">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"StudyTrack helped me balance my coursework and prepare for exams effectively. The priority system is a game-changer!"</p>
+                <p class="testimonial-author">- Alex, Computer Science Student</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-text">"I love the progress tracking features. Being able to see how much I've studied motivates me to keep going."</p>
+                <p class="testimonial-author">- Jamie, Pre-Med Student</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The AI suggestions helped me create a realistic study schedule that I could actually stick to. My grades have improved significantly!"</p>
+                <p class="testimonial-author">- Taylor, Engineering Major</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta">
+        <h2>Ready to Boost Your Study Efficiency?</h2>
+        <p>Join thousands of students who have transformed their study habits with StudyTrack.</p>
+        <div class="cta-buttons">
+            <button class="btn-primary" id="createAccountBtn">Create Free Account</button>
+            <button class="btn
